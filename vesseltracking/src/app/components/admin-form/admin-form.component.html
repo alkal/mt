@@ -1,0 +1,65 @@
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-4 col-lg-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <div class="container">
+          <div class="row logoContainer mb-4">
+            <div class="col-sm-12 mx-auto pb-2 text-center">
+              <img src="assets/MarineTraffic_Logo.png"/>
+              <div class="clearfix"></div>
+              <h1 class="h4">Vessel Tracking App</h1>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <form class="py-1 col-sm-12" (ngSubmit)="trackFn(mmsi.value,trackingDays.value)" #trackForm="ngForm">
+              <div class="alert alert-primary" role="alert" [ngStyle]="{'display': trackForm.invalid?'':'none'}"><i class="material-icons pr-2 float-left">info</i>Insert Vessel Data</div>
+                <div class="form-group">
+                  <label for="mmsi">MMSI</label>
+                  <input type="text" id="mmsi" name="mmsi" #mmsi="ngModel" ngModel class="form-control form-control-sm" [ngClass]="{'is-invalid':mmsi.invalid&&mmsi.touched}" required/>
+                  <div class="invalid-feedback" [hidden]="mmsi.valid">Please add MMSI</div>
+                </div>
+                <div class="form-group">
+                  <label for="trackingDays">Days</label>
+                  <select class="form-control form-control-sm" id="trackingDays" name="trackingDays" #trackingDays="ngModel" ngModel [ngClass]="{'is-invalid':trackingDays.invalid&&trackingDays.touched}" required>
+                    <option value="">- Select Tracking Days -</option>
+                    <option *ngFor="let selectedDay of daysList" [value]="selectedDay.value">
+                        {{selectedDay.name}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback" [hidden]="trackingDays.valid">Please select tracking days</div>
+                </div>
+                <button type="submit" class="btn btn-primary" [disabled]="trackForm.invalid||(mmsi.untouched&&trackingDays.untouched)">Track Vessel</button>
+            </form>
+          </div> <!--// END .row-->
+          <div class="row mt-4">
+            <div class="col-sm-12 py-4 bg-grey">
+                <h1 class="h5">Animate Vessel Root</h1>
+                <mat-slider min="0" max="98" step="20" id="slider" name="slider" #slider="ngModel" [(ngModel)]="sliderVal" (change)="vesselSliderFn(slider.value)" [disabled]="trackForm.invalid"></mat-slider>
+                <div class="row">
+                  <div class="col-sm-6">
+                      <select class="form-control" id="speed" name="speed" #speed="ngModel" [(ngModel)]="speedVal" id="exampleFormControlSelect1" (change)="vesselSpeedFn(speed.value)" [disabled]="trackForm.invalid">
+                        <option *ngFor="let speed of speedRange;let i=index;" [value]="speed.value" [attr.selected]="speedVal==speed.value">
+                            {{speed.name}}
+                        </option>
+                      </select>
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                          <button class="btn btn-sm btn-dark" (click)="vesselAnimateFn('start')" [disabled]="disabled||trackForm.invalid"><i class="material-icons">play_arrow</i></button>
+                          <button class="btn btn-sm btn-dark" (click)="vesselAnimateFn('stop')" [disabled]="!disabled||trackForm.invalid"><i class="material-icons">stop</i></button>
+                      </div>
+                  </div>
+                  {{animatedRootStatus}}
+                </div>
+            </div>
+          </div><!--// END .row-->
+        </div>
+      </div>     
+    </nav>
+    <main role="main" class="col-md-8 col-lg-10 ml-sm-auto px-4">
+        <h2 class="h3">Vessel Tracking Details</h2>
+        <app-vessel-map></app-vessel-map>
+    </main>
+  </div>
+</div>
+  
